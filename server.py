@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import time
 from wialon import Wialon, WialonError
@@ -9,15 +10,18 @@ from handler import handler
 app = Flask(__name__)
 
 
-@app.route("/<request>", methods=['GET'])
-def index(request):
-    token, ID, TimeFrom, TimeTo = request.split(';')
+@app.route("/KrayDEO/<requestbot>", methods=['GET'])
+def index(requestbot):
+    req_b = str(requestbot)
+    print(req_b)
+    token, ID, TimeFrom, TimeTo = req_b.split(';')
     y, m, d, h, min, s = TimeFrom.split('-')
     y1, m1, d1, h1, min1, s1 = TimeTo.split('-')
     t1 = datetime.datetime(int(y), int(m), int(d), int(h), int(min), int(s))
-    from_time = int(str(time.mktime(t1.timetuple()))[:-2]) + 25200
+    from_time = int(str(time.mktime(t1.timetuple()))[:-2]) - 25200
     t2 = datetime.datetime(int(y1), int(m1), int(d1), int(h1), int(min1), int(s1))
-    to_time = int(str(time.mktime(t2.timetuple()))[:-2]) + 25200
+    to_time = int(str(time.mktime(t2.timetuple()))[:-2]) - 25200
+
     wialon = Wialon()
     login = None
     try:
@@ -26,6 +30,7 @@ def index(request):
         print('Error while login')
     wialon.sid = login['eid']
     res_id = api_wialon_dwnData(wialon)
+    #res_id = 21121126
     if res_id:
         calb1, calb2, calb3 = execute_report(res_id, wialon, ID, from_time, to_time)
     else:

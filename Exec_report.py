@@ -1,11 +1,14 @@
-from pprint import pprint
+# -*- coding: utf-8 -*-
 
 
 def execute_report(res_id, wialon, id, t1, t2):
+
     units1 = None
     units2 = None
     units3 = None
     units4 = None
+    #print(t1)
+    #print(t2)
 
     units = wialon.report_exec_report({
         'reportResourceId': res_id,
