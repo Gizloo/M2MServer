@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import datetime
 import time
 from pprint import pprint
@@ -28,9 +30,8 @@ except WialonError as e:
 
 wialon.sid = login['eid']
 res_id = api_wialon_dwnData(wialon)
+print(res_id)
 calb1, calb2, calb3 = execute_report(res_id, wialon, ID, from_time, to_time)
-# pprint(calb2)
-# print(calb2[0]['c'][2])
 
 milleage = int(str(calb1[1][1])[:calb1[1][1].find("."):])
 pprint(calb1)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pprint import pprint
-
+# -*- coding: utf-8 -*-
 
 def handler(calb2, calb3, mill):
     class callback:
@@ -15,6 +14,7 @@ def handler(calb2, calb3, mill):
 
     if calb2:
         if calb2[0]['c'][0] == 'ДУТ не работает':
+            print(calb2[0]['c'][0])
             h, m, s = calb2[0]['c'][4].split(':')
             if int(calb2[0]['c'][3]) > 10 and int(h) > 0:
                 callback.dut_status = 'Lost DUT data (>10%)'
