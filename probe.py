@@ -1,51 +1,79 @@
 import datetime
-import time
 from pprint import pprint
-from  down_data import api_wialon_dwnData
-from wialon import Wialon, WialonError
-from flask import Flask
-from Exec_report import execute_report
-from handler import handler
 
-username = "20914243;2020-05-21-08-00-00;2020-05-21-20-00-00"
+from wialon import Wialon, WialonError, flags
 
-token = 'db1cee3b1f964df20f8d163a1423b6c60314BB8E0E3A5135B336096AAEF0C4346AAF14A0'
-ID, TimeFrom, TimeTo = username.split(';')
-y, m, d, h, min, s = TimeFrom.split('-')
-y1, m1, d1, h1, min1, s1 = TimeTo.split('-')
-t1 = datetime.datetime(int(y), int(m), int(d), int(h), int(min), int(s))
-from_time = int(str(time.mktime(t1.timetuple()))[:-2])
-t2 = datetime.datetime(int(y1), int(m1), int(d1), int(h1), int(min1), int(s1))
-to_time = int(str(time.mktime(t2.timetuple()))[:-2])
-
+token = 'e5023bcf1b3d6fa822c0f3b8d03759d5C81B9FB7768294A92AD2138C5F516C26FF757672'
 wialon = Wialon()
 login = None
-
 try:
-    login = wialon.token_login(token=token)
+    login = wialon.token_login(token=str(token))
 except WialonError as e:
     print('Error while login')
-
 wialon.sid = login['eid']
-res_id = api_wialon_dwnData(wialon)
-calb1, calb2, calb3 = execute_report(res_id, wialon, ID, from_time, to_time)
-# pprint(calb2)
-# print(calb2[0]['c'][2])
 
-milleage = int(str(calb1[1][1])[:calb1[1][1].find("."):])
-pprint(calb1)
 
-callback_retr = ''
-callback_retr += str(calb1[1][1])[:calb1[1][1].find(" "):] + ';'
-callback_retr += str(calb1[2][1]) + ';'
-callback_retr += str(calb1[3][1])[:calb1[3][1].find(" "):] + ';'
-callback_retr += str(calb1[4][1])[:calb1[4][1].find(" "):] + ';'
-callback_retr += str(calb1[5][1])[:calb1[5][1].find(" "):] + ';'
-callback_retr += str(calb1[6][1])[:calb1[6][1].find(" "):] + ';'
+def api_wialon_dwnData(wialon):
+    spec = {
+        'itemsType': 'avl_unit',
+        'propName': 'sys_name',
+        'propValueMask': '*',
+        'sortType': 'sys_name'
+    }
 
-callback = handler(calb2, calb3, milleage)
-callback_retr += str(callback.data_status) + ';' + str(callback.dut_status) + ';' + str(callback.track_status) + ';' + str(callback.ign_status) + ';'
-# print(obj_callback)
-print(callback_retr)
-# print(callback[0]['c'][0])
+    interval = {"from": 0, "to": 0}
+    custom_flag = flags.ITEM_DATAFLAG_BASE
+    data = wialon.core_search_items(spec=spec, force=1, flags=custom_flag, **interval)
+    return data
 
+
+data = api_wialon_dwnData(wialon)
+pprint(data)
+timeFrom = 1590944400
+timeTo = 1592326740
+
+unit1 = wialon.messages_load_interval({
+
+    "itemId": 21092790,
+    "timeFrom": timeFrom,
+    "timeTo": timeTo,
+    "flags": 0x0000,
+    "flagsMask": 0xFF00,
+    "loadCount": 0xffffffff})
+
+# pprint(unit1)
+mess_block = unit1['messages']
+first_mess_coord_x = None
+first_mess_coord_y = None
+
+for mess in mess_block:
+    if mess['pos']['x']:
+        first_mess_coord_x = mess['pos']['x']
+        first_mess_coord_y = mess['pos']['y']
+        break
+
+prostrel = 0
+prostrel_time = []
+print(first_mess_coord_x)
+print(first_mess_coord_y)
+
+for mess in mess_block:
+    if mess['pos']['x']:
+        dist = ((((mess['pos']['x']) - first_mess_coord_x)**2+((mess['pos']['y']) - first_mess_coord_y)**2)**0.5)*70000
+        if dist > 400:
+            prostrel += 1
+
+            time_mess1 = mess['t']
+            time_mess = datetime.datetime.utcfromtimestamp(time_mess1+25200).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+            time_mess = time_mess.replace('Z', ' ')
+            time_mess = time_mess.replace('T', ' ')
+
+            prostrel_time.append(str(time_mess)[:20:])
+            prostrel_time.append(time_mess1)
+
+        first_mess_coord_x = mess['pos']['x']
+        first_mess_coord_y = mess['pos']['y']
+
+print(prostrel)
+print(prostrel_time)
