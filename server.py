@@ -96,14 +96,14 @@ def norm(requesthandler):
     callback_retr = ''
 
     if callback.fuel_up:
-        callback_retr += f"Заправка не сходится:{round(fuel_up_f - fuel_up, 2)});"
+        callback_retr += "Заправка не сходится:" + round(fuel_up_f - fuel_up, 2) + ";"
     elif callback.nedoliv:
-        callback_retr += f"Недолив:{round((fuel_up - fuel_up_f), 2)};"
+        callback_retr += "Недолив:" + round((fuel_up - fuel_up_f), 2) + ";"
     else:
         callback_retr += "Ok;"  # Заправка ОК
 
     if callback.fuel_down:
-        callback_retr += f"{round(fuel_down, 2)};"
+        callback_retr += str(round(fuel_down, 2)) + ";"
     else:
         callback_retr += "0;"  # Слив ОК
 
@@ -114,18 +114,19 @@ def norm(requesthandler):
 
     """Дальше один из 4 вариантов"""
     if callback.short:
-        callback_retr += f"Короткая поездка, списание по норме;"
+        callback_retr += "Короткая поездка, списание по норме;"
 
     elif callback.perejog:
-        callback_retr += f"Пережог топлива:{round(consum_f - consumption_n, 2)}, списание по факту;"
+        callback_retr += "Пережог топлива:" + round(consum_f - consumption_n, 2) + ", списание по факту;"
 
     elif callback.economy and not callback.nedoliv and not callback.fuel_down:
-        callback_retr += f"Экономия топлива:({round(consumption_n - consum_f, 2)}), списание по факту;"
+        callback_retr += "Экономия топлива:" + round(consumption_n - consum_f, 2) + ", списание по факту;"
 
     else:
-        callback_retr += f"Расход сходится"
+        callback_retr += "Расход сходится"
 
     return callback_retr
+
 
 if __name__ == "__main__":
     app.run(host='10.128.0.2', port=4567, debug=True, threaded=True)
