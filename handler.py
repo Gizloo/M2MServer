@@ -57,12 +57,16 @@ def handler2(volume_tank, consum_f, fuel_up_f, fuel_down, fuel_up_n, consum_n, s
     diff_fuel_start = int(start_fuel_f - start_fuel_p)
     if diff_fuel_start > 5 or diff_fuel_start < -5:
         callback2.fuel_start = True
-    diff_consum = consum_f - consum_n
-    pr_diff_consum = int(diff_consum / volume_tank * 100)
-    if pr_diff_consum > 1:
-        callback2.perejog = True
-    if pr_diff_consum < -1:
-        callback2.economy = True
+
+    if consum_n / volume_tank * 100 < 5:
+        callback2.short = True
+    else:
+        diff_consum = consum_f - consum_n
+        pr_diff_consum = int(diff_consum / volume_tank * 100)
+        if pr_diff_consum > 1:
+            callback2.perejog = True
+        if pr_diff_consum < -1:
+            callback2.economy = True
 
     return callback2
 
