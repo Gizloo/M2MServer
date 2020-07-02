@@ -100,7 +100,7 @@ def execute_report2(res_id, wialon, id, t1, t2):
         "indexFrom": 0,
         "indexTo": 0
     })
-    print(units1[0]['c'])
+
     volume_tank = units1[0]['c'][0]
     end_fuel_f = units1[0]['c'][5]
     fuel_up_f = units1[0]['c'][2]

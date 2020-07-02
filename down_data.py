@@ -1,4 +1,5 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
+
 from pprint import pprint
 
 from wialon import flags, Wialon, WialonError
@@ -17,8 +18,8 @@ def api_wialon_dwnData(wialon):
     res_id = None
     for count in data['items']:
         if 'api' in str(count['nm']):
-            res_id = count['id']
-
+        	res_id = count['id']
+   
     return res_id
 
 

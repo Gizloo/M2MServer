@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 
 import datetime
 import time
@@ -15,14 +14,13 @@ app = Flask(__name__)
 @app.route("/KrayDEO/<requestbot>", methods=['GET'])
 def index(requestbot):
     req_b = str(requestbot)
-    # print(req_b)
     token, ID, TimeFrom, TimeTo = req_b.split(';')
     y, m, d, h, min, s = TimeFrom.split('-')
     y1, m1, d1, h1, min1, s1 = TimeTo.split('-')
     t1 = datetime.datetime(int(y), int(m), int(d), int(h), int(min), int(s))
-    from_time = int(str(time.mktime(t1.timetuple()))[:-2])
+    from_time = int(str(time.mktime(t1.timetuple()))[:-2]) - 25200
     t2 = datetime.datetime(int(y1), int(m1), int(d1), int(h1), int(min1), int(s1))
-    to_time = int(str(time.mktime(t2.timetuple()))[:-2])
+    to_time = int(str(time.mktime(t2.timetuple()))[:-2]) - 25200
 
     wialon = Wialon()
     login = None
@@ -43,7 +41,11 @@ def index(requestbot):
     callback_retr = ''
     callback_retr += str(calb1[1][1])[:calb1[1][1].find(" "):] + ';'
     callback_retr += str(calb1[2][1]) + ';'
-    callback_retr += str(calb1[3][1])[:calb1[3][1].find(" "):] + ';'
+    callback_retr += str(calb1[4][1])[:calb1[3][1].find(" "):] + ';'
+    callback_retr += str(calb1[3][1])[:calb1[4][1].find(" "):] + ';'
+    callback_retr += str(calb1[5][1])[:calb1[5][1].find(" "):] + ';'
+    callback_retr += str(calb1[6][1])[:calb1[6][1].find(" "):] + ';'
+
 
     callback = handler1(calb2, calb3, milleage, pr_count, pr_dist)
 
@@ -56,7 +58,6 @@ def index(requestbot):
 @app.route("/KrayDEO/norm/<requesthandler>", methods=['GET'])
 def norm(requesthandler):
     req_b = str(requesthandler)
-    print(req_b)
 
     token, ID, TimeFrom, TimeTo, start_fuel_n, consumption_n, fuel_up = req_b.split(';')
 
@@ -69,12 +70,10 @@ def norm(requesthandler):
     y, m, d, h, min, s = TimeFrom.split('-')
     y1, m1, d1, h1, min1, s1 = TimeTo.split('-')
     t1 = datetime.datetime(int(y), int(m), int(d), int(h), int(min), int(s))
-    from_time = int(str(time.mktime(t1.timetuple()))[:-2])
+    from_time = int(str(time.mktime(t1.timetuple()))[:-2]) - 25200
     t2 = datetime.datetime(int(y1), int(m1), int(d1), int(h1), int(min1), int(s1))
-    to_time = int(str(time.mktime(t2.timetuple()))[:-2])
+    to_time = int(str(time.mktime(t2.timetuple()))[:-2]) - 25200
 
-    print(from_time)
-    print(to_time)
 
     wialon = Wialon()
     login = None
@@ -96,9 +95,9 @@ def norm(requesthandler):
     callback_retr = ''
 
     if callback.fuel_up:
-        callback_retr += "Заправка не сходится:" + round(fuel_up_f - fuel_up, 2) + ";"
+        callback_retr += "Заправка не сходится:" + str(round(fuel_up_f - fuel_up, 2)) + ";"
     elif callback.nedoliv:
-        callback_retr += "Недолив:" + round((fuel_up - fuel_up_f), 2) + ";"
+        callback_retr += "Недолив:" + str(round((fuel_up - fuel_up_f), 2)) + ";"
     else:
         callback_retr += "Ok;"  # Заправка ОК
 
@@ -117,10 +116,10 @@ def norm(requesthandler):
         callback_retr += "Короткая поездка, списание по норме;"
 
     elif callback.perejog:
-        callback_retr += "Пережог топлива:" + round(consum_f - consumption_n, 2) + ", списание по факту;"
+        callback_retr += "Пережог топлива:" + str(round(consum_f - consumption_n, 2)) + ", списание по факту;"
 
     elif callback.economy and not callback.nedoliv and not callback.fuel_down:
-        callback_retr += "Экономия топлива:" + round(consumption_n - consum_f, 2) + ", списание по факту;"
+        callback_retr += "Экономия топлива:" + str(round(consumption_n - consum_f, 2)) + ", списание по факту;"
 
     else:
         callback_retr += "Расход сходится"

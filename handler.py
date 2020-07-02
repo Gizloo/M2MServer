@@ -12,7 +12,6 @@ def handler1(calb2, calb3, mill, pr_count, pr_dist):
 
     if calb2:
         if calb2[0]['c'][0] == 'ДУТ не работает':
-            print(calb2[0]['c'][0])
             h, m, s = calb2[0]['c'][4].split(':')
             if int(calb2[0]['c'][3]) > 10 and int(h) > 1:
                 callback.dut_status = 'Lost DUT data (>10%)'
