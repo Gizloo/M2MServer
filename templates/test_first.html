@@ -11,11 +11,16 @@
         /*font-family: Verdana, Arial, Helvetica, sans-serif; */
         font-size: 12pt; /* Размер шрифта в пунктах */
        }
+       .bold {
+
+           font-weight: bold;
+       }
+
        .target {
         margin: 20px;
         border: 2px solid #000;
         padding-left: 10px;
-        width: 320px;
+        width: 900px;
         background-color: #e3f3ff;
         }
     </style>
@@ -43,6 +48,10 @@
           <br>Корректность трека = {{track_status}}
           <br>Работа ДУТ = {{dut_status}}
           <br>Работа зажигания = {{ign_status}}
+          <br>
+           <p class="bold">
+          <br>Ответ для 1С = {{callback_full}}
+            </p>
         </p>
     </div>
     </body>
