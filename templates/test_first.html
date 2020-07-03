@@ -1,0 +1,42 @@
+<!doctype html>
+<head>
+<title>Hello from Flask</title>
+<style>
+   h1 {
+    /*font-family: 'Times New Roman', Times, serif; !* Гарнитура текста *! */
+    font-size: 13pt; /* Размер шрифта в процентах */
+   }
+   p {
+    /*font-family: Verdana, Arial, Helvetica, sans-serif; */
+    font-size: 12pt; /* Размер шрифта в пунктах */
+   }
+</style>
+    </head>
+<body>
+{% if name %}
+  <h1>
+      Объект: {{ name }}
+      <br>
+      <br>Начало периода: {{start_period}}
+      <br>Конец периода: {{end_period}}
+  </h1>
+   <p>
+      Пробег по СМТ = {{probeg}}
+      <br>Моточасы по СМТ = {{motoh}}
+      <br>
+      <br>Нач. уровень топлива по СМТ = {{start_fuel}}
+      <br>Кон. уровень топлива по СМТ = {{end_fuel}}
+      <br>
+      <br>Заправки = {{fuel_up}}
+      <br>Сливы = {{fuel_down}}
+      <br>
+      <br>Корректность данных = {{data_status}}
+      <br>Корректность трека = {{track_status}}
+      <br>Работа ДУТ = {{dut_status}}
+      <br>Работа зажигания = {{ign_status}}
+    </p>
+
+{% else %}
+  <h1>Hello World!</h1>
+{% endif %}
+</body>
