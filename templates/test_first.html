@@ -1,0 +1,48 @@
+<!doctype html>
+<head>
+<title>Тест первого запроса</title>
+<style>
+   h1 {
+    /*font-family: 'Times New Roman', Times, serif; !* Гарнитура текста *! */
+    font-size: 13pt; /* Размер шрифта в процентах */
+   }
+   p {
+    /*font-family: Verdana, Arial, Helvetica, sans-serif; */
+    font-size: 12pt; /* Размер шрифта в пунктах */
+   }
+   div {
+    padding-left: 10px;
+    width: 350px;
+    background-color: #e3f3ff;
+    }
+</style>
+    </head>
+<body>
+{% if name %}
+<div>
+  <h1>
+      Объект: {{ name }}
+      <br>
+      <br>Начало периода: {{start_period}}
+      <br>Конец периода: {{end_period}}
+  </h1>
+   <p>
+      Пробег по СМТ = {{probeg}}
+      <br>Моточасы по СМТ = {{motoh}}
+      <br>
+      <br>Нач. уровень топлива по СМТ = {{start_fuel}}
+      <br>Кон. уровень топлива по СМТ = {{end_fuel}}
+      <br>
+      <br>Заправки = {{fuel_up}}
+      <br>Сливы = {{fuel_down}}
+      <br>
+      <br>Корректность данных = {{data_status}}
+      <br>Корректность трека = {{track_status}}
+      <br>Работа ДУТ = {{dut_status}}
+      <br>Работа зажигания = {{ign_status}}
+    </p>
+<div>
+{% else %}
+  <h1>Hello World!</h1>
+{% endif %}
+</body>
