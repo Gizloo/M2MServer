@@ -173,8 +173,8 @@ def test(requestbot):
 
     data_obj = wialon.core_search_item({"id": ID, "flags": 0x00000001})
     name_obj = data_obj['item']['nm']
-    start_period = f'{d}.{m}.{y}. {h}:{min}:{s}'
-    end_period = f'{d1}.{m1}.{y1}. {h1}:{min1}:{s1}'
+    start_period = '{}.{}.{}. {}:{}:{}'.format(d,m,y,h,min,s)
+    end_period = '{}.{}.{}. {}:{}:{}'.format(d1,m1,y1,h1,min1,s1)
     return render_template('test_first.html', name=name_obj, probeg=probeg, motoh=motoh, start_fuel=start_fuel,
                            end_fuel=end_fuel, fuel_up=fuel_up, fuel_down=fuel_down, start_period=start_period,
                            end_period=end_period, data_status=callback.data_status, data_info=callback.data_info,
