@@ -11,17 +11,17 @@
         /*font-family: Verdana, Arial, Helvetica, sans-serif; */
         font-size: 12pt; /* Размер шрифта в пунктах */
        }
-       div {
+       .format {
         border: 2px solid #000;
         padding-left: 10px;
-        width: 350px;
+        width: 800px;
         background-color: #e3f3ff;
         }
     </style>
     </head>
 
     <body>
-    <div>
+    <div class="format">
       <h1>
           Объект: {{ name }}
           <br>
@@ -38,10 +38,12 @@
           <br>Заправки = {{fuel_up}}
           <br>Сливы = {{fuel_down}}
           <br>
-          <br>Корректность данных = {{data_status}}
-          <br>Корректность трека = {{track_status}}
+          <br>Корректность данных = {{data_info}}
+          <br>Корректность трека = {{track_info}}
           <br>Работа ДУТ = {{dut_status}}
           <br>Работа зажигания = {{ign_status}}
+
+          <br>Строка ответа для 1С: {{callback}}
         </p>
     </div>
     </body>
