@@ -17,23 +17,25 @@ def execute_report(res_id, wialon, id, t1, t2):
         'interval': {'from': t1, 'to': t2, 'flags': 0}})
     # pprint(units)
     units = units['reportResult']['stats']
-    try:
-        units1 = wialon.report_get_result_rows({
-            "tableIndex": 0,
-            "indexFrom": 0,
-            "indexTo": 0
-        })
-        try:
-            units2 = wialon.report_get_result_rows({
-                "tableIndex": 1,
-                "indexFrom": 0,
-                "indexTo": 0
-            })
 
-        except:
-            pass
-    except:
-        pass
+    units3 = wialon.report_exec_report({
+        'reportResourceId': res_id,
+        'reportTemplateId': 3,
+        'reportObjectId': id,
+        'reportObjectSecId': 0,
+        'interval': {'from': t1, 'to': t2, 'flags': 0}})
+
+    units4 = wialon.report_get_result_rows({
+        "tableIndex": 0,
+        "indexFrom": 0,
+        "indexTo": 100
+    })
+
+    units5 = wialon.report_get_result_rows({
+        "tableIndex": 1,
+        "indexFrom": 0,
+        "indexTo": 100
+    })
 
     unit3 = wialon.messages_load_interval({
 
@@ -82,7 +84,7 @@ def execute_report(res_id, wialon, id, t1, t2):
                 first_mess_coord_x = mess['pos']['x']
                 first_mess_coord_y = mess['pos']['y']
 
-    return units, units1, units2, prostrel, prostrel_dist
+    return units, prostrel, prostrel_dist, units4, units5
 
 
 def execute_report2(res_id, wialon, id, t1, t2):
@@ -107,8 +109,20 @@ def execute_report2(res_id, wialon, id, t1, t2):
     fuel_down = units1[0]['c'][3]
     start_fuel_f = units1[0]['c'][4]
 
-
     return float(volume_tank), float(end_fuel_f), float(fuel_up_f), float(fuel_down), float(start_fuel_f)
+
+
+def execute_report3(res_id, wialon, id, t1, t2):
+
+    units = wialon.report_exec_report({
+        'reportResourceId': res_id,
+        'reportTemplateId': 1,
+        'reportObjectId': id,
+        'reportObjectSecId': 0,
+        'interval': {'from': t1, 'to': t2, 'flags': 0}})
+    units = units['reportResult']['stats']
+    return units
+
 
 
 # token = 'db1cee3b1f964df20f8d163a1423b6c6286A919144720D152383E5DD77C6113AD31CDC9A'

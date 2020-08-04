@@ -1,33 +1,89 @@
 # -*- coding: utf-8 -*-
+from lost_data_handler import lost_data
 
-def handler1(calb2, calb3, mill, pr_count, pr_dist):
+
+def handler1(calb1, mill, pr_count, pr_dist, from_time, to_time, wialon, units4, units5, res_id, ID):
     class callback:
         def __init__(self):
-            self.data_status = 'Data Ok (>90%)'
-            self.track_status = 'Track Ok (>90%)'
-            self.dut_status = 'DUT no Error'
-            self.ign_status = 'IGN no Error'
+            self.data_status = 'Data OK'
+            self.data_info = 'Данные корректны'
+
+            self.track_status = 'Track OK'
+            self.track_info = 'Трек корректен'
+
+            self.dut_status = 'DUT OK'
+            self.dut_info = 'ДУТ есть, работает'
+
+            self.ign_status = 'IGN OK'
+            self.ign_info = 'Зажигание работает'
 
     callback = callback()
 
-    if calb2:
-        if calb2[0]['c'][0] == 'ДУТ не работает':
-            h, m, s = calb2[0]['c'][4].split(':')
-            if int(calb2[0]['c'][3]) > 10 and int(h) > 1:
-                callback.dut_status = 'Lost DUT data (>10%)'
+    if float(units4[0]['c'][5]) >= (float(to_time) - float(from_time)) - 1800:
+            callback.data_status = 'Нет данных за период!'
+    elif float(units4[0]['c'][5]) > 3600:
+        try:
+            callback.data_status, callback.data_info = lost_data(wialon, units4, res_id, ID)
+        except:
+            pass
+
+    if int(units5[0]['c'][3]) > 10 and float(units5[0]['c'][4]) > 3600:
+        if float(calb1[3][1])[:calb1[3][1].find(" "):] == 0 and float(calb1[4][1])[:calb1[4][1].find(" "):]:
+            object_ = wialon.core_search_item({"id": ID,
+                                               "flags": 0x00001000})
+            sens = object_['item']['sens']
+
+            for num, sen in sens.items():
+                if 'Расходомер' in sen["n"]:
+                    callback.dut_status = 'DUT not find'
+                    callback.dut_info = 'ДУТ не установлен, есть расходомер'
+            for num, sen in sens.items():
+                if 'Топливо' in sen["n"] and 'fuel_level' in sen["t"]:
+                    callback.dut_status = 'Lost DUT data'
+                    callback.dut_info = 'ДУТ не работает'
+
         else:
-            h, m, s = str(calb2[0]['c'][2]).split(':')
-            if int(h) > 1:
-                callback.data_status = 'Lost data ( >10% )'
+            object_ = wialon.core_search_item({"id": ID,
+                                               "flags": 0x00001000})
+            sens = object_['item']['sens']
 
-    if calb3:
-        if calb3[0]['c'][0] == 'ДУТ не работает':
-            h, m, s = calb3[0]['c'][4].split(':')
-            if int(calb3[0]['c'][3]) > 10 and int(h) > 1:
-                callback.dut_status = 'DUT Error ( >10% )'
+            for num, sen in sens.items():
+                if 'Расходомер' in sen["n"]:
+                    callback.dut_status = 'DUT not find'
+                    callback.dut_info = 'ДУТ не установлен, есть расходомер'
 
-    if pr_count > 1 and pr_dist > int(mill)/100*85:
+            for num, sen in sens.items():
+                if 'Топливо' in sen["n"] and 'fuel_level' in sen["t"]:
+                    callback.dut_status = 'DUT OK'
+                    callback.dut_info = 'ДУТ есть, работает'
+
+    if pr_count > 1 and pr_dist/1000 > int(mill)/100*85:
         callback.track_status = 'Track NotOk (<90%)'
+        callback.track_info = f'Зафиксировано {pr_count} прострелов; расстоянием {round(pr_dist/1000, 1)} км.'
+
+    object_ = wialon.core_search_item({"id": ID,
+                                       "flags": 0x00001000})
+    sens = object_['item']['sens']
+
+    for num, sen in sens.items():
+        if 'engine operation' in sen["t"]:
+            h, m, s = calb1[2][1].split(':')
+            if int(h) > 0 or int(m) > 0 or int(s) > 0:
+                if 'pwr_ext' in sen["p"]:
+                    callback.ign_status = 'IGN Warning'
+                    callback.ign_info = 'Зажигание заведено на питание'
+                    break
+                else:
+                    callback.ign_status = 'IGN OK'
+                    callback.ign_info = 'Зажигание работает'
+                    break
+            else:
+                callback.ign_status = 'IGN Error'
+                callback.ign_info = 'Зажигание не работает'
+                break
+        else:
+            callback.ign_status = 'IGN Error'
+            callback.ign_info = 'Нет датчика зажигания'
 
     return callback
 
@@ -57,15 +113,37 @@ def handler2(volume_tank, consum_f, fuel_up_f, fuel_down, fuel_up_n, consum_n, s
     if diff_fuel_start > 5 or diff_fuel_start < -5:
         callback2.fuel_start = True
 
-    if consum_n / volume_tank * 100 < 5:
-        callback2.short = True
+    if float(volume_tank) > 500:
+        if consum_n / volume_tank * 100 < 2:
+            callback2.short = True
+        else:
+            diff_consum = consum_f - consum_n
+            pr_diff_consum = int(diff_consum / volume_tank * 100)
+            if pr_diff_consum > 1:
+                callback2.perejog = True
+            if pr_diff_consum < -1:
+                callback2.economy = True
+
+    elif float(volume_tank) > 300:
+        if consum_n / volume_tank * 100 < 3:
+            callback2.short = True
+        else:
+            diff_consum = consum_f - consum_n
+            pr_diff_consum = int(diff_consum / volume_tank * 100)
+            if pr_diff_consum > 1:
+                callback2.perejog = True
+            if pr_diff_consum < -1:
+                callback2.economy = True
     else:
-        diff_consum = consum_f - consum_n
-        pr_diff_consum = int(diff_consum / volume_tank * 100)
-        if pr_diff_consum > 1:
-            callback2.perejog = True
-        if pr_diff_consum < -1:
-            callback2.economy = True
+        if consum_n / volume_tank * 100 < 5:
+            callback2.short = True
+        else:
+            diff_consum = consum_f - consum_n
+            pr_diff_consum = int(diff_consum / volume_tank * 100)
+            if pr_diff_consum > 1:
+                callback2.perejog = True
+            if pr_diff_consum < -1:
+                callback2.economy = True
 
     return callback2
 

@@ -1,37 +1,56 @@
 <!doctype html>
-<head>
-<title>Hello from Flask</title>
-<style>
-   h1 {
-    /*font-family: 'Times New Roman', Times, serif; !* Гарнитура текста *! */
-    font-size: 13pt; /* Размер шрифта в процентах */
-   }
-   p {
-    /*font-family: Verdana, Arial, Helvetica, sans-serif; */
-    font-size: 12pt; /* Размер шрифта в пунктах */
-   }
-</style>
+<html>
+    <head>
+    <title>Тест проверки расхода</title>
+    <style>
+       h1 {
+        /*font-family: 'Times New Roman', Times, serif; !* Гарнитура текста *! */
+        font-size: 13pt; /* Размер шрифта в процентах */
+       }
+       p {
+        /*font-family: Verdana, Arial, Helvetica, sans-serif; */
+        font-size: 12pt; /* Размер шрифта в пунктах */
+       }
+       .format {
+        border: 2px solid #000;
+        padding-left: 10px;
+        width: 800px;
+        background-color: #e3f3ff;
+        }
+    </style>
     </head>
-<body>
-{% if name %}
-  <h1>
-      Объект: {{ name }}
-      <br>
-      <br>Начало периода: {{start_period}}
-      <br>Конец периода: {{end_period}}
-  </h1>
-   <p>
-      <br>Пробег по СМТ = {{probeg}}
-      <br>Моточасы по СМТ = {{motoh}}
-      <br>
-      <br>Нач. уровень топлива по СМТ = {{start_fuel}}
-      <br>Кон. уровень топлива по СМТ = {{end_fuel}}
-      <br>
-      <br>Заправки = {{fuel_up}}
-      <br>Сливы = {{fuel_down}}
-    </p>
 
-{% else %}
-  <h1>Hello World!</h1>
-{% endif %}
-</body>
+    <body>
+    <div class="format">
+      <h1>
+          Объект: {{ name }}
+          <br>
+          <br>Начало периода: {{start_p}}
+          <br>Конец периода: {{end_period}}
+      </h1>
+       <p>
+          <br>Объем бака ТС = {{volume_tank}}
+          <br>{{fuel_down_info}}
+          <br>
+          <br>Нач. уровень по путевому = {{start_fuel_n}}
+          <br>Нач. уровень по СМТ = {{start_fuel_f}}
+          <br>Ответ по нач. уровню для 1С = {{callback_start_info}}
+          <br>
+          <br>Кон. уровень топлива по путевому (расчет) = {{end_fuel_n}}
+          <br>Кон. уровень топлива по СМТ = {{end_fuel_f}}
+          <br>
+          <br>Расход по путевому = {{consumption_n}}
+          <br>Расход по СМТ = {{consum_f}}
+          <br>Ответ по расходу: {{callback_consum_info}}
+          <br>
+          <br>Заправка по путевому = {{fuel_up}}
+          <br>Заправка по СМТ = {{fuel_up_f}}
+          <br>Ответ по заправке: {{callback_fuel_info}}
+          <br>
+
+
+          <br>Строка ответа для 1С: {{callback}}
+        </p>
+    </div>
+    </body>
+</html>
