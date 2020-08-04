@@ -23,27 +23,28 @@ def api_wialon_dwnData(wialon):
     return res_id
 
 
-# def api_wialon_dwnObj(wialon):
-#     spec = {
-#         'itemsType': 'avl_unit',
-#         'propName': 'sys_name',
-#         'propValueMask': '*',
-#         'sortType': 'sys_name'
-#     }
-#     interval = {"from": 0, "to": 0}
-#     custom_flag = flags.ITEM_DATAFLAG_BASE
-#     data = wialon.core_search_items(spec=spec, force=1, flags=custom_flag, **interval)
-    # pprint(data)
-    # for key in data['items']:
-    #     print(f'{key["nm"]} : {key["id"]}')
+def api_wialon_dwnObj(wialon):
+    spec = {
+        'itemsType': 'avl_unit',
+        'propName': 'sys_name',
+        'propValueMask': '*',
+        'sortType': 'sys_name'
+    }
+    interval = {"from": 0, "to": 0}
+    custom_flag = flags.ITEM_DATAFLAG_BASE + 0x00000100
+    data = wialon.core_search_items(spec=spec, force=1, flags=custom_flag, **interval)
+    pprint(data)
+    for key in data['items']:
+        # print(f'{key["nm"]} : {key["id"]}')
+        print(key)
 
-# token = 'db1cee3b1f964df20f8d163a1423b6c6286A919144720D152383E5DD77C6113AD31CDC9A'
-# wialon = Wialon()
-# login = None
-# try:
-#     login = wialon.token_login(token=str(token))
-# except WialonError as e:
-#     print('Error while login')
-# wialon.sid = login['eid']
-# res_id = api_wialon_dwnData(wialon)
-# print(res_id)
+
+token = 'd3ff2792689e2584f97d38ca51893d6f43598232EC622405C8D74152117122D4A40A7CF7'
+wialon = Wialon()
+login = None
+try:
+    login = wialon.token_login(token=str(token))
+except WialonError as e:
+    print('Error while login')
+wialon.sid = login['eid']
+api_wialon_dwnObj(wialon)
